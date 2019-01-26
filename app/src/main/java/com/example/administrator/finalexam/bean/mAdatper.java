@@ -48,7 +48,7 @@ public class mAdatper extends RecyclerView.Adapter{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         Feed message = mFeeds.get(i);
         MyViewHolder.updateUI(message);
 

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainActivity.this, videoPlayer.class);
-                intent.putExtra("name",mFeeds.get(position).toString());
+                intent.putExtra("url",mFeeds.get(position).getVideo_url());
                 startActivity(intent);
             }
 

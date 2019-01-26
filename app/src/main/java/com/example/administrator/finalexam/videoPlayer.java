@@ -68,7 +68,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         setContentView(R.layout.activity_video_player);
 
         //从另一个活动拿来
-        etPath ="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
+        etPath =getIntent().getStringExtra("url");
         mSeekbar = (SeekBar) findViewById(R.id.sb_progress);
         tvCurrentTime = (TextView) findViewById(R.id.tv_current_time);
         tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
