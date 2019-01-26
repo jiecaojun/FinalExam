@@ -18,7 +18,7 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/camera"
             android:drawableTop="@drawable/camera"
-            android:id="@+id/ButtonTest"
+            android:id="@+id/Button_Record"
             android:paddingTop="32sp"
             android:layout_alignParentRight="true"
             android:drawablePadding="-15sp"

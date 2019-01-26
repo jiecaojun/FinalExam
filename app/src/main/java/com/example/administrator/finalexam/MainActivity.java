@@ -18,6 +18,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,27 +48,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRv;
-    private SmartRefreshLayout srfresh;
-    private mAdatper recycleAdapter;
-    private List<Feed> mFeeds = new ArrayList<>();
-    private Handler mHandler;
+        private SmartRefreshLayout srfresh;
+        private mAdatper recycleAdapter;
+        private List<Feed> mFeeds = new ArrayList<>();
+        private Handler mHandler;
+        private Button myRecordButton;
 
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-
-
-
-        //申请权限
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
+            //申请权限
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},111);
         mHandler=new Handler();
         //初始化
+        myRecordButton = findViewById(R.id.Button_Record);
+        //添加跳转
+
+
         mRv=findViewById(R.id.rv);
         srfresh= findViewById(R.id.refreshLayout);
         initFlash();
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         srfresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(final RefreshLayout refreshlayout) {
-                //延时展示，延时2秒
+                //延时展示，延时1秒
 
                 mHandler.postDelayed(new Runnable() {
                     @Override
