@@ -35,5 +35,10 @@ public  class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCli
     @Override
     public void onClick(View v) {
 
+//            int clickedPosition = getAdapterPosition();
+//            if (mOnClickListener != null) {
+//                mOnClickListener.onListItemClick(clickedPosition);
+//            }
+
     }
 }

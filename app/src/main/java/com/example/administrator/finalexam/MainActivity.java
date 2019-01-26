@@ -1,11 +1,9 @@
 package com.example.administrator.finalexam;
 
 import android.Manifest;
-import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +12,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.administrator.finalexam.bean.Feed;
 import com.example.administrator.finalexam.bean.FeedResponse;
 import com.example.administrator.finalexam.bean.mAdatper;
@@ -75,7 +67,18 @@ public class MainActivity extends AppCompatActivity {
     }
     public void initFlash(){
         fetchFeed();
-        recycleAdapter = new mAdatper(mFeeds );
+        recycleAdapter = new mAdatper(mFeeds,mAdatper.mOnItemClickListener);
+        recycleAdapter.setOnItemClickListener(new mAdatper.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(MainActivity.this, videoPlayer.class);
+                intent.putExtra("name",mFeeds.get(position).toString());
+                startActivity(intent);
+            }
+
+
+        });
+
         LinearSnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(mRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
