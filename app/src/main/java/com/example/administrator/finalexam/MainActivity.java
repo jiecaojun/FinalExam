@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -163,8 +164,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+
+        private static TextView viewID;
+        private static ImageView viewImage;
+        private static TextView viewName;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            viewID = (TextView)itemView.findViewById(R.id.tv_ID);
+            viewImage = (ImageView)itemView.findViewById(R.id.tv_image);
+            viewName = (TextView) itemView.findViewById(R.id.tv_name);
         }
     }
 }
