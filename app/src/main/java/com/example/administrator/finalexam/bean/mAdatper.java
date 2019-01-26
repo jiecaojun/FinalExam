@@ -37,7 +37,7 @@ public class mAdatper extends RecyclerView.Adapter{
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         MyViewHolder viewHolder = new MyViewHolder(view);
 
-        Glide.with(viewImage.getContext()).load(mFeeds.get(viewHolderCount).getImage_url()).into(viewImage);
+        Glide.with(viewHolder.viewImage.getContext()).load(mFeeds.get(viewHolderCount).getImage_url()).into(viewHolder.viewImage);
         viewHolder.viewName.setText(mFeeds.get(viewHolderCount).getUser_name());
         viewHolder.viewID.setText(mFeeds.get(viewHolderCount).getStudeng_id());
                 viewHolderCount++;
