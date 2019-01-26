@@ -34,6 +34,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private SeekBar mSeekbar;
     private TextView tvCurrentTime;
     private TextView tvTotalTime;
+    private SurfaceView mSurfaceView;
 
     /**
      * 闲置
@@ -72,6 +73,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         mSeekbar = (SeekBar) findViewById(R.id.sb_progress);
         tvCurrentTime = (TextView) findViewById(R.id.tv_current_time);
         tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
+        mSurfaceView=(SurfaceView)findViewById(R.id.surfaceview);
         mSeekbar.setOnSeekBarChangeListener(this);
 
         SurfaceView mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
@@ -79,6 +81,25 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         holder = mSurfaceView.getHolder();
         //是采用自己内部的双缓冲区，而是等待别人推送数据
 //        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mSurfaceView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMediapPlayer != null) {
+                    if (currentState != PAUSING) {
+                        mMediapPlayer.start();
+                        currentState = PLAYING;
+                        //每次在调用刷新线程时，都要设为false
+                        isStopUpdatingProgress = false;
+                        return;
+                        //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
+                    } else if (currentState == STOPING) {
+                        mMediapPlayer.reset();
+                        mMediapPlayer.release();
+                    }
+                }
+                play();
+            }
+        });
     }
 
     /**
@@ -86,23 +107,22 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
      *
      * @param v
      */
-    public void video_start_or_pause(View v) {
-        if (mMediapPlayer != null) {
-            if (currentState != PAUSING) {
-                mMediapPlayer.start();
-                currentState = PLAYING;
-                //每次在调用刷新线程时，都要设为false
-                isStopUpdatingProgress = false;
-                return;
-                //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
-            } else if (currentState == STOPING) {
-                mMediapPlayer.reset();
-                mMediapPlayer.release();
-            }
-        }
-        play();
-
-    }
+//    public void video_start_or_pause(View v) {
+//        if (mMediapPlayer != null) {
+//            if (currentState != PAUSING) {
+//                mMediapPlayer.start();
+//                currentState = PLAYING;
+//                //每次在调用刷新线程时，都要设为false
+//                isStopUpdatingProgress = false;
+//                return;
+//                //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
+//            } else if (currentState == STOPING) {
+//                mMediapPlayer.reset();
+//                mMediapPlayer.release();
+//            }
+//        }
+//        play();
+//    }
 
     /**
      * 停止
