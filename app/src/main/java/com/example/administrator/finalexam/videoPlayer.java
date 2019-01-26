@@ -14,7 +14,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -35,9 +34,6 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private SeekBar mSeekbar;
     private TextView tvCurrentTime;
     private TextView tvTotalTime;
-    private TextView video_title;
-    private TextView video_infor;
-    private ImageButton imageButton;
 
     /**
      * 闲置
@@ -71,20 +67,16 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
 
-        //从另一个活动获取url，title，以及information
-        etPath ="http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4";
+        //从另一个活动拿来
+        etPath =getIntent().getStringExtra("url");
         mSeekbar = (SeekBar) findViewById(R.id.sb_progress);
         tvCurrentTime = (TextView) findViewById(R.id.tv_current_time);
         tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
-        video_title=(TextView) findViewById(R.id.text_headline);
-        video_infor=(TextView) findViewById(R.id.video_infofmation);
-        imageButton=(ImageButton)findViewById(R.id.video_change);
         mSeekbar.setOnSeekBarChangeListener(this);
 
         SurfaceView mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         //SurfaceView帮助类对象
         holder = mSurfaceView.getHolder();
-
         //是采用自己内部的双缓冲区，而是等待别人推送数据
 //        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
@@ -95,28 +87,20 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
      * @param v
      */
     public void video_start_or_pause(View v) {
-        if(isStopUpdatingProgress==true){
-            if (mMediapPlayer != null) {
-                if (currentState != PAUSING) {
-                    mMediapPlayer.start();
-                    currentState = PLAYING;
-                    imageButton.setImageAlpha(R.mipmap.icon_pause);
-                    //每次在调用刷新线程时，都要设为false
-                    isStopUpdatingProgress = false;
-                    return;
-                    //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
-                } else if (currentState == STOPING) {
-                    mMediapPlayer.reset();
-                    mMediapPlayer.release();
-                }
+        if (mMediapPlayer != null) {
+            if (currentState != PAUSING) {
+                mMediapPlayer.start();
+                currentState = PLAYING;
+                //每次在调用刷新线程时，都要设为false
+                isStopUpdatingProgress = false;
+                return;
+                //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
+            } else if (currentState == STOPING) {
+                mMediapPlayer.reset();
+                mMediapPlayer.release();
             }
-            play();
         }
-        else {
-            imageButton.setImageAlpha(R.mipmap.icon_start);
-            mMediapPlayer.pause();
-            isStopUpdatingProgress=true;
-        }
+        play();
 
     }
 
