@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         refreshlayout.finishRefresh();
 
                     }
-                },2000);
+                },1000);
 
             }
         });
@@ -95,15 +95,15 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        fetchFeed();
+//                        fetchFeed();
                         recycleAdapter.refresh(mFeeds);
                         refreshlayout.finishLoadmore();
                     }
-                },2000);
+                },1000);
             }
 
         });
-        srfresh.setEnableAutoLoadmore(true);
+        srfresh.setEnableAutoLoadmore(false);
         srfresh.autoRefresh();
     }
 
