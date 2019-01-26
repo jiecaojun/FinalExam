@@ -1,7 +1,9 @@
 package com.example.administrator.finalexam;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -9,10 +11,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.administrator.finalexam.bean.Feed;
 import com.example.administrator.finalexam.bean.FeedResponse;
+import com.example.administrator.finalexam.bean.mAdatper;
 import com.example.administrator.finalexam.network.IMiniDouyinService;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRv;
     private SmartRefreshLayout srfresh;
-    private mAdapter recycleAdapter;
+    private mAdatper recycleAdapter;
     private List<Feed> mFeeds = new ArrayList<>();
     private Handler mHandler;
 
@@ -51,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
+
+        //申请权限
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},111);
@@ -61,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
         initFlash();
     }
     public void initFlash(){
-        recycleAdapter = new mAdapter( );
+        fetchFeed();
+        recycleAdapter = new mAdatper(mFeeds );
+        LinearSnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         //设置布局管理器
         mRv.setLayoutManager(layoutManager);
@@ -133,47 +148,5 @@ public class MainActivity extends AppCompatActivity {
                 enqueue(callback);
     }
 
-    public class mAdapter extends RecyclerView.Adapter{
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            ImageView imageView = new ImageView(viewGroup.getContext());
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            imageView.setAdjustViewBounds(true);
-            return new MyViewHolder(imageView);
-        }
 
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            ImageView iv = (ImageView) viewHolder.itemView;
-
-            String url = mFeeds.get(i).getImage_url();
-            Glide.with(iv.getContext()).load(url).into(iv);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mFeeds.size();
-        }
-
-        public void refresh(List<Feed> addList) { //增加数据
-            int position = mFeeds.size();
-            mFeeds.addAll(position, addList);
-            notifyDataSetChanged();
-        }
-
-    }
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-
-        private static TextView viewID;
-        private static ImageView viewImage;
-        private static TextView viewName;
-
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            viewID = (TextView)itemView.findViewById(R.id.tv_ID);
-            viewImage = (ImageView)itemView.findViewById(R.id.tv_image);
-            viewName = (TextView) itemView.findViewById(R.id.tv_name);
-        }
-    }
 }

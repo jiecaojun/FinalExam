@@ -1,5 +1,6 @@
 package com.example.administrator.finalexam.bean;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -19,6 +20,8 @@ public  class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCli
      super(itemView);
      viewID = (TextView)itemView.findViewById(R.id.tv_ID);
      viewImage = (ImageView)itemView.findViewById(R.id.tv_image);
+     int heightPixels = Resources.getSystem().getDisplayMetrics().heightPixels;
+     viewImage.setMaxHeight((int) (heightPixels*0.2));
      viewName = (TextView) itemView.findViewById(R.id.tv_name);
  }
 
