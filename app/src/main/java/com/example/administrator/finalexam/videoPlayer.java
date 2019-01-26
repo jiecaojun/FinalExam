@@ -1,6 +1,7 @@
 package com.example.administrator.finalexam;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -24,7 +25,8 @@ import static android.widget.Toast.LENGTH_SHORT;
 /**
  * @author bytedance
  */
-public class VideoPlayer extends AppCompatActivity implements OnSeekBarChangeListener, OnCompletionListener {
+
+public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeListener, OnCompletionListener {
 
     private boolean isStopUpdatingProgress = false;
     private String etPath;

@@ -1,4 +1,4 @@
-//package com.example.administrator.finalexam.VideoPlayer;
+//package com.example.administrator.finalexam.videoPlayer;
 //
 //import android.content.Intent;
 //import android.content.pm.ActivityInfo;
@@ -13,7 +13,7 @@
 //import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 //import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 //
-//public class VideoPlayer extends AppCompatActivity {
+//public class videoPlayer extends AppCompatActivity {
 //    StandardGSYVideoPlayer videoPlayer;
 //
 //    OrientationUtils orientationUtils;
