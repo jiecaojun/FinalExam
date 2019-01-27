@@ -39,6 +39,8 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private SeekBar mSeekbar;
     private TextView tvCurrentTime;
     private TextView tvTotalTime;
+    private TextView author_id;
+    private TextView author_name;
     private SurfaceView mSurfaceView;
     private ProgressBar mProcessBar;
     private TextView process_notice;
@@ -77,6 +79,11 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
 
         //从另一个活动拿来
         etPath =getIntent().getStringExtra("url");
+        author_id=(TextView)findViewById(R.id.author_id);
+        author_name=(TextView)findViewById(R.id.author_name);
+        author_name.setText(getIntent().getStringExtra("name"));
+        author_id.setText(getIntent().getStringExtra("id"));
+
         mSeekbar = (SeekBar) findViewById(R.id.sb_progress);
         tvCurrentTime = (TextView) findViewById(R.id.tv_current_time);
         tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
@@ -93,10 +100,16 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         //SurfaceView帮助类对象
         holder = mSurfaceView.getHolder();
         //是采用自己内部的双缓冲区，而是等待别人推送数据
-//        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+
+
         mSurfaceView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(currentState==PLAYING){
+                    return;
+                }
                 mProcessBar.setVisibility(View.VISIBLE);
                 process_notice.setVisibility(View.INVISIBLE);
 
@@ -116,6 +129,25 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
                 play();
             }
         });
+
+
+//        mProcessBar.setVisibility(View.VISIBLE);
+//        process_notice.setVisibility(View.INVISIBLE);
+//
+//        if (mMediapPlayer != null) {
+//            if (currentState != PAUSING) {
+//                mMediapPlayer.start();
+//                currentState = PLAYING;
+//                //每次在调用刷新线程时，都要设为false
+//                isStopUpdatingProgress = false;
+//                return;
+//                //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
+//            } else if (currentState == STOPING) {
+//                mMediapPlayer.reset();
+//                mMediapPlayer.release();
+//            }
+//        }
+//        play();
     }
 
     /**
@@ -250,7 +282,6 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
      */
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Toast.makeText(this, "播放完了，重新再播放", LENGTH_SHORT).show();
         if(mMediapPlayer!=null) {
             mMediapPlayer.start();
         }
