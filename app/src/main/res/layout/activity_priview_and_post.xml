@@ -30,13 +30,18 @@
             android:background="@drawable/back" />
 
         <Button
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:id="@+id/btn_post"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/back" />
+            android:background="@drawable/circle"
+            android:textColor="@color/white"
+            android:text="@string/post"
+            android:textAllCaps="false"
+            />
     </RelativeLayout>
 
 </RelativeLayout>

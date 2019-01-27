@@ -1,5 +1,6 @@
 package com.example.administrator.finalexam;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -34,7 +35,8 @@ public class PriviewAndPost extends AppCompatActivity {
     private String path;
     private String imagePath;
     private VideoView videoView;
-    private Uri uri;
+    private Uri videoUri;
+    private Uri imgUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,9 +44,9 @@ public class PriviewAndPost extends AppCompatActivity {
         setContentView(R.layout.activity_priview_and_post);
         path=getIntent().getStringExtra("path");
 
-        uri = Uri.parse(path);
+        videoUri = Uri.parse("file://"+path);
         videoView = findViewById(R.id.video_pre);
-        videoView.setVideoURI(uri);
+        videoView.setVideoURI(videoUri);
         videoView.start();
 
         findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
@@ -73,9 +75,12 @@ public class PriviewAndPost extends AppCompatActivity {
     public void postVideo(){
         Bitmap bitmap = getVideoThumb(path);
         imagePath = saveBitmapToSDCard(bitmap,path);
+        imgUri = Uri.parse("file://" + imagePath);
 
         getResponseWithRetrofitAsyncWithVideo(new Callback<PostVideoResponse>() {
             @Override public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response){
+                Intent intent = new Intent(PriviewAndPost.this,MainActivity.class);
+                startActivity(intent);
                 Toast.makeText(getApplicationContext(),"上传成功！！",Toast.LENGTH_SHORT).show();
             }
             @Override public void onFailure(Call<PostVideoResponse> call, Throwable t) {
@@ -91,7 +96,7 @@ public class PriviewAndPost extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        retrofit.create(IMiniDouyinService.class).creatVideo("1120170000","hhhhh",getMultipartFromUri("cover_image",Uri.parse(imagePath)),getMultipartFromUri("video",uri) ).
+        retrofit.create(IMiniDouyinService.class).creatVideo("1120170000","hhhhh",getMultipartFromUri("cover_image",imgUri),getMultipartFromUri("video",videoUri) ).
                 enqueue(callback);
     }
     public MultipartBody.Part getMultipartFromUri(String name, Uri uri) {
@@ -113,10 +118,12 @@ public class PriviewAndPost extends AppCompatActivity {
     public static String  saveBitmapToSDCard(Bitmap bitmap, String path) {
         String newpath = path.substring(0,path.length()-4)+".jpg";
         FileOutputStream fos = null;
+        File file = new File(newpath);
         try {
-            fos = new FileOutputStream(path);
+            fos = new FileOutputStream(file);
             if (fos != null) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+               fos.flush();
                 fos.close();
                 return newpath;
             }

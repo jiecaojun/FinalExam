@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FinalExam</string>
+    <string name="post">Post a Story</string>
     <string name="top_name">For you</string>
 </resources>

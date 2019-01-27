@@ -130,7 +130,7 @@ public class VideoControlView extends View {
     /**
      * 长按最短时间  单位毫秒
      */
-    public long LONG_CLICK_MIN_TIME = 800;
+    public long LONG_CLICK_MIN_TIME = 300;
     private Context context;
     private int mWidth;
     private int mHeight;
