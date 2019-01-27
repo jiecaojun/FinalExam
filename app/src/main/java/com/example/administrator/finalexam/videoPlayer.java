@@ -3,6 +3,8 @@ package com.example.administrator.finalexam;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -75,6 +77,8 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
         mSurfaceView=(SurfaceView)findViewById(R.id.surfaceview);
         mSeekbar.setOnSeekBarChangeListener(this);
+        mSeekbar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        mSeekbar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 
         SurfaceView mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         //SurfaceView帮助类对象
