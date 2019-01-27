@@ -1,6 +1,7 @@
 package com.example.administrator.finalexam;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -35,6 +36,7 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
     private int mNumOfCamera;
+    private String filePath;
 
     private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
 
@@ -86,12 +88,18 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
                 switch (resultCode) {
                     case 0:
                         Toast.makeText(RecordActivity.this, "录制时间过短", Toast.LENGTH_SHORT).show();
+                        mMediaRecorder.stop();
+                        mMediaRecorder.release();
+                        isRecording = false;
                         break;
                     case 1:
                         mMediaRecorder.stop();
                         mMediaRecorder.release();
                         isRecording = false;
                         Toast.makeText(RecordActivity.this, "录制结束", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(RecordActivity.this, PriviewAndPost.class);
+                        intent.putExtra("path",filePath);
+                        startActivity(intent);
                         break;
                 }
 
@@ -222,8 +230,8 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-
-        mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+        filePath = getOutputMediaFile(MEDIA_TYPE_VIDEO).toString();
+        mMediaRecorder.setOutputFile(filePath);
 
         mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
         mMediaRecorder.setOrientationHint(rotationDegree);
@@ -276,6 +284,7 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
 
     private Camera.PictureCallback mPicture = (data, camera) -> {
         File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        filePath = pictureFile.getPath();
         if (pictureFile == null) {
             return;
         }

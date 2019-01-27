@@ -65,10 +65,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-
+       //初始化
         mHandler=new Handler();
-        //初始化
+        mRv=findViewById(R.id.rv);
+        srfresh= findViewById(R.id.refreshLayout);
         myRecordButton = findViewById(R.id.Button_Record);
+
+        initFlash();
+
         //添加跳转
         myRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mRv=findViewById(R.id.rv);
-        srfresh= findViewById(R.id.refreshLayout);
-        initFlash();
     }
     public void initFlash(){
         fetchFeed();
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainActivity.this, videoPlayer.class);
                 intent.putExtra("url",mFeeds.get(position).getVideo_url());
+                intent.putExtra("id",mFeeds.get(position).getStudeng_id());
+                intent.putExtra("name",mFeeds.get(position).getUser_name());
                 startActivity(intent);
                 overridePendingTransition(R.anim.in_from_right, R.anim.out_left);
 
