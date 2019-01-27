@@ -110,7 +110,12 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
                 if(currentState==PLAYING){
                     return;
                 }
-                mProcessBar.setVisibility(View.VISIBLE);
+                if(currentState==NORMAL){
+                    mProcessBar.setVisibility(View.VISIBLE);
+                }
+                if(currentState==STOPING){
+                    mProcessBar.setVisibility(View.INVISIBLE);
+                }
                 process_notice.setVisibility(View.INVISIBLE);
 
                 if (mMediapPlayer != null) {
@@ -190,6 +195,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         String path = etPath;
         mMediapPlayer = new MediaPlayer();
         try {
+            mProcessBar.setVisibility(View.INVISIBLE);
             //设置数据类型
             mMediapPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             //设置以下播放器显示的位置
@@ -222,7 +228,6 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
 
             isStopUpdatingProgress = false;
             new Thread(new UpdateProgressRunnable()).start();
-            mProcessBar.setVisibility(View.INVISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -283,7 +288,9 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     @Override
     public void onCompletion(MediaPlayer mp) {
         if(mMediapPlayer!=null) {
-            mMediapPlayer.start();
+            currentState=STOPING;
+            process_notice.setText("重播");
+            process_notice.setVisibility(View.VISIBLE);
         }
     }
 
