@@ -1,9 +1,12 @@
 package com.example.administrator.finalexam;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -49,17 +53,31 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
             setContentView(R.layout.activity_main);
 
             //申请权限
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},111);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,},1);
+                }
+
+            }
+
         mHandler=new Handler();
         //初始化
         myRecordButton = findViewById(R.id.Button_Record);
         //添加跳转
-
+        myRecordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,RecordActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.in_from_left, R.anim.out_right);
+            }
+        });
 
         mRv=findViewById(R.id.rv);
         srfresh= findViewById(R.id.refreshLayout);
@@ -69,11 +87,15 @@ public class MainActivity extends AppCompatActivity {
         fetchFeed();
         recycleAdapter = new mAdatper(mFeeds,mAdatper.mOnItemClickListener);
         recycleAdapter.setOnItemClickListener(new mAdatper.OnItemClickListener() {
+
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MainActivity.this, videoPlayer.class);
                 intent.putExtra("url",mFeeds.get(position).getVideo_url());
                 startActivity(intent);
+                overridePendingTransition(R.anim.in_from_right, R.anim.out_left);
+
+
             }
 
 

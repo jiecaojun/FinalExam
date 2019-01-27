@@ -1,19 +1,21 @@
 package com.example.administrator.finalexam;
 
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.annotation.TargetApi;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.Window;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -63,10 +65,19 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
      */
     private SurfaceHolder holder;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_video_player);
+        Transition explode = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            explode = TransitionInflater.from(this).inflateTransition(R.transition.explode);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(explode);
+        }
 
         //从另一个活动拿来
         etPath =getIntent().getStringExtra("url");
