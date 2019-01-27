@@ -1,21 +1,24 @@
 package com.example.administrator.finalexam;
 
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -37,6 +40,8 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private TextView tvCurrentTime;
     private TextView tvTotalTime;
     private SurfaceView mSurfaceView;
+    private ProgressBar mProcessBar;
+    private TextView process_notice;
 
     /**
      * 闲置
@@ -65,19 +70,10 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
      */
     private SurfaceHolder holder;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_video_player);
-        Transition explode = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            explode = TransitionInflater.from(this).inflateTransition(R.transition.explode);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setEnterTransition(explode);
-        }
 
         //从另一个活动拿来
         etPath =getIntent().getStringExtra("url");
@@ -86,8 +82,14 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
         mSurfaceView=(SurfaceView)findViewById(R.id.surfaceview);
         mSeekbar.setOnSeekBarChangeListener(this);
+        mSeekbar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mSeekbar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        }
+        mProcessBar=(ProgressBar)findViewById(R.id.progressBar);
+        process_notice=(TextView)findViewById(R.id.progress_notice);
 
-        SurfaceView mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         //SurfaceView帮助类对象
         holder = mSurfaceView.getHolder();
         //是采用自己内部的双缓冲区，而是等待别人推送数据
@@ -95,6 +97,9 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         mSurfaceView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProcessBar.setVisibility(View.VISIBLE);
+                process_notice.setVisibility(View.INVISIBLE);
+
                 if (mMediapPlayer != null) {
                     if (currentState != PAUSING) {
                         mMediapPlayer.start();
@@ -163,6 +168,13 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
             mMediapPlayer.start();
 
             mMediapPlayer.setOnCompletionListener(this);
+            mMediapPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Log.e("MediaPlayer", "what: " + what + " extra: " + extra);
+                    return false;
+                }
+            });
             //把当前播放器的状诚置为：播放中
             currentState = PLAYING;
 
@@ -178,8 +190,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
 
             isStopUpdatingProgress = false;
             new Thread(new UpdateProgressRunnable()).start();
-
-
+            mProcessBar.setVisibility(View.INVISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -240,10 +251,24 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     @Override
     public void onCompletion(MediaPlayer mp) {
         Toast.makeText(this, "播放完了，重新再播放", LENGTH_SHORT).show();
-        mp.start();
-
+        if(mMediapPlayer!=null) {
+            mMediapPlayer.start();
+        }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMediapPlayer.stop();
+        mMediapPlayer.reset();
+        try {
+            mMediapPlayer.release();
+        } catch (Exception e) {
+            Log.e("MediaPlayer", e.toString());
+        }
+        mMediapPlayer = null;
+
+    }
     /**
      * 刷新进度和时间的任务
      *
@@ -254,7 +279,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
         @Override
         public void run() {
             //每隔1秒钟取一下当前正在播放的进度，设置给seekbar
-            while (!isStopUpdatingProgress) {
+            while (!isStopUpdatingProgress && mMediapPlayer != null) {
                 //得到当前进度
                 int currentPosition = mMediapPlayer.getCurrentPosition();
                 mSeekbar.setProgress(currentPosition);
