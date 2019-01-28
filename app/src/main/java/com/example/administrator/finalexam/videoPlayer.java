@@ -1,6 +1,7 @@
 package com.example.administrator.finalexam;
 
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -44,7 +46,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private TextView author_name;
     private SurfaceView mSurfaceView;
     private ProgressBar mProcessBar;
-    private TextView process_notice;
+    private ImageView process_notice;
     private LottieAnimationView lottieAnimationView;
 
     /**
@@ -96,7 +98,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
             mSeekbar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
         }
         mProcessBar=(ProgressBar)findViewById(R.id.progressBar);
-        process_notice=(TextView)findViewById(R.id.progress_notice);
+        process_notice=(ImageView) findViewById(R.id.progress_notice);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         //SurfaceView帮助类对象
@@ -118,20 +120,34 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
                         currentState = PLAYING;
                         //TODO播放动画
                         lottieAnimationView = findViewById(R.id.doubleclick);
+                        lottieAnimationView.setVisibility(View.VISIBLE);
                         lottieAnimationView.setAnimation("thumbs_up.json");
                         lottieAnimationView.setRepeatCount(0);
                         lottieAnimationView.playAnimation();
+                        lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                lottieAnimationView.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
                     }
                 }
-////                    if(currentState==PAUSING){
-////                        mMediapPlayer.pause();
-////                        //停止刷新主线程
-////                        isStopUpdatingProgress = true;
-////                    }
-//                }
-//                else if (currentState==PAUSING){
-//                    play();
-//                }
+
                 if(currentState==NORMAL){
                     mProcessBar.setVisibility(View.VISIBLE);
                 }
@@ -311,7 +327,6 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     public void onCompletion(MediaPlayer mp) {
         if(mMediapPlayer!=null) {
             currentState=STOPING;
-            process_notice.setText("重播");
             process_notice.setVisibility(View.VISIBLE);
         }
     }
