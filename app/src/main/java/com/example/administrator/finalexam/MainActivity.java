@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.administrator.finalexam.bean.Feed;
 import com.example.administrator.finalexam.bean.FeedResponse;
 import com.example.administrator.finalexam.bean.mAdatper;
@@ -43,7 +44,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView mRv;
+
+        private RecyclerView mRv;
         private SmartRefreshLayout srfresh;
         private mAdatper recycleAdapter;
         private List<Feed> mFeeds = new ArrayList<>();
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mRv=findViewById(R.id.rv);
         srfresh= findViewById(R.id.refreshLayout);
         myRecordButton = findViewById(R.id.Button_Record);
+
 
         initFlash();
 

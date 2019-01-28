@@ -99,6 +99,7 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
                         Toast.makeText(RecordActivity.this, "录制结束", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(RecordActivity.this, PriviewAndPost.class);
                         intent.putExtra("path",filePath);
+                        finish();
                         startActivity(intent);
                         break;
                 }

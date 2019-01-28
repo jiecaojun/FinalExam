@@ -1,9 +1,11 @@
 package com.example.administrator.finalexam;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.administrator.finalexam.R;
 import com.example.administrator.finalexam.bean.PostVideoResponse;
 import com.example.administrator.finalexam.network.IMiniDouyinService;
@@ -30,6 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PriviewAndPost extends AppCompatActivity {
 
+    private LottieAnimationView animationViewSuccess;
     private Button btnExit;
     private Button Post;
     private String path;
@@ -43,6 +47,7 @@ public class PriviewAndPost extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priview_and_post);
         path=getIntent().getStringExtra("path");
+        animationViewSuccess = findViewById(R.id.animation_view);
 
         videoUri = Uri.parse("file://"+path);
         videoView = findViewById(R.id.video_pre);
@@ -59,6 +64,8 @@ public class PriviewAndPost extends AppCompatActivity {
         findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(PriviewAndPost.this,RecordActivity.class);
+                startActivity(intent);
                 PriviewAndPost.this.finish();
             }
         });
@@ -79,12 +86,35 @@ public class PriviewAndPost extends AppCompatActivity {
 
         getResponseWithRetrofitAsyncWithVideo(new Callback<PostVideoResponse>() {
             @Override public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response){
-                Intent intent = new Intent(PriviewAndPost.this,MainActivity.class);
-                startActivity(intent);
-                Toast.makeText(getApplicationContext(),"上传成功！！",Toast.LENGTH_SHORT).show();
+                animationViewSuccess.playAnimation();
+                animationViewSuccess.addAnimatorListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        Intent intent = new Intent(PriviewAndPost.this,MainActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(),"上传成功！！",Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
             }
             @Override public void onFailure(Call<PostVideoResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),"上传失败！！",Toast.LENGTH_SHORT).show();
+
                 t.printStackTrace();
             }
         });
