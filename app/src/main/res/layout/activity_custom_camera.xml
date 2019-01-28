@@ -48,8 +48,9 @@
         android:id="@+id/btn_select"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="580dp"
-        android:layout_marginLeft="70dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="50dp"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/folder" />
 
 

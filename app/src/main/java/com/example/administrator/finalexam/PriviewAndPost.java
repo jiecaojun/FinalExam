@@ -109,7 +109,7 @@ public class PriviewAndPost extends AppCompatActivity {
                         Intent intent = new Intent(PriviewAndPost.this,MainActivity.class);
                         PriviewAndPost.this.finish();
 //                        startActivity(intent);
-                        Toast.makeText(getApplicationContext(),"上传成功！！",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),"上传成功！！",Toast.LENGTH_SHORT).show();
 
                     }
 
