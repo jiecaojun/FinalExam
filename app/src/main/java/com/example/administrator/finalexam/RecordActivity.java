@@ -18,12 +18,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.example.administrator.finalexam.VideoPlayer.VideoControlView;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import cn.ckz.takephotoview.TakePhotoButton;
 
 import static com.example.administrator.finalexam.utils.Utils.MEDIA_TYPE_IMAGE;
 import static com.example.administrator.finalexam.utils.Utils.MEDIA_TYPE_VIDEO;
@@ -31,7 +35,7 @@ import static com.example.administrator.finalexam.utils.Utils.getOutputMediaFile
 
 
 public class RecordActivity extends AppCompatActivity implements SurfaceHolder.Callback {
-
+    private TakePhotoButton button;
     private SurfaceView mSurfaceView;
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
@@ -68,62 +72,52 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
         //todo 给SurfaceHolder添加Callback
         mSurfaceHolder.addCallback(this);
 //
-        VideoControlView controlView = (VideoControlView) findViewById(R.id.control_view);
-        controlView.setOnRecordListener(new VideoControlView.OnRecordListener() {
+        button=findViewById(R.id.control_view);
+        button.setOnProgressTouchListener(new TakePhotoButton.OnProgressTouchListener() {
             @Override
-            public void onShortClick() {
+            public void onClick(TakePhotoButton photoButton) {
                 mCamera.takePicture(null,null,mPicture);
-                Toast.makeText(RecordActivity.this, "点击事件", Toast.LENGTH_SHORT).show();
+                Log.d("RecordActivity","onClick()" );
+                Toast.makeText(RecordActivity.this,"单机",Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void OnRecordStartClick() {
+            public void onLongClick(TakePhotoButton photoButton) {
                 prepareVideoRecorder();
                 isRecording = true;
-                Toast.makeText(RecordActivity.this, "开始录制", Toast.LENGTH_SHORT).show();
+                button.start();
+                Log.d("RecordActivity","onLongClick()" );
             }
 
             @Override
-            public void OnFinish(int resultCode) {
-                switch (resultCode) {
-                    case 0:
-                        Toast.makeText(RecordActivity.this, "录制时间过短", Toast.LENGTH_SHORT).show();
-                        mMediaRecorder.stop();
-                        mMediaRecorder.release();
-                        isRecording = false;
-                        break;
-                    case 1:
-                        mMediaRecorder.stop();
-                        mMediaRecorder.release();
-                        isRecording = false;
-                        Toast.makeText(RecordActivity.this, "录制结束", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(RecordActivity.this, PriviewAndPost.class);
-                        intent.putExtra("path",filePath);
-                        finish();
-                        startActivity(intent);
-                        break;
+            public void onLongClickUp(TakePhotoButton photoButton) {
+                onFinish();
+            }
+
+
+            @Override
+            public void onFinish() {
+                Log.d("RecordActivity","onFinish()" );
+                if(isRecording) {
+                    mMediaRecorder.stop();
+                    mMediaRecorder.release();
+                    Intent intent = new Intent(RecordActivity.this, PriviewAndPost.class);
+                intent.putExtra("path",filePath);
+                RecordActivity.this.finish();
+                startActivity(intent);
+                overridePendingTransition(R.anim.in_from_left, R.anim.out_right);
                 }
+                isRecording = false;
 
             }
         });
+
+
 
         findViewById(R.id.btn_exit).setOnClickListener(v -> {
             this.finish();
         });
 
-//        findViewById(R.id.btn_record).setOnClickListener(v -> {
-//            //todo 录制，第一次点击是start，第二次点击是stop
-//            if (isRecording) {
-//                //todo 停止录制
-//                mMediaRecorder.stop();
-//                mMediaRecorder.release();
-//                isRecording = false;
-//            } else {
-//                //todo 录制
-//                prepareVideoRecorder();
-//                isRecording = true;
-//            }
-//        });
 
         findViewById(R.id.btn_facing).setOnClickListener(v -> {
             //todo 切换前后摄像头

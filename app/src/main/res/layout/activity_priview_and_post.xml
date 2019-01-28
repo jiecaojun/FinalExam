@@ -43,11 +43,30 @@
             android:textAllCaps="false"
             />
     </RelativeLayout>
+
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
+        android:id="@+id/animation_success"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_centerInParent="true"
         app:lottie_rawRes="@raw/check_animation" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_loading"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        app:lottie_rawRes="@raw/hyperloading"
+        app:lottie_loop="true"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_false"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        app:lottie_rawRes="@raw/error_cross" />
+
+
 
 </RelativeLayout>

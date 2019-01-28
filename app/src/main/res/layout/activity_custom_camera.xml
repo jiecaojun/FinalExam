@@ -12,17 +12,16 @@
         android:layout_height="match_parent" />
 
 
-    <com.example.administrator.finalexam.VideoPlayer.VideoControlView
+    <cn.ckz.takephotoview.TakePhotoButton
         android:id="@+id/control_view"
-        android:layout_width="130dp"
+        android:layout_width="100dp"
         android:layout_alignParentBottom="true"
-        android:layout_height="130dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
-        app:excircleRadius="40dp"
-        app:innerCircleRadius="30dp"
-        app:progressColor="@color/bitCicle"
-
-        android:text="Hello World!"/>
+        app:outCircleColor="@color/white"
+        app:readColor="@color/bitCicle"
+        android:layout_marginBottom="30dp"
+        />
 
 
 
