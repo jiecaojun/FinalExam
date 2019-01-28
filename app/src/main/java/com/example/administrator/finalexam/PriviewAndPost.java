@@ -130,7 +130,6 @@ public class PriviewAndPost extends AppCompatActivity {
                 animationViewLoading.setVisibility(View.GONE);
                 animationViewFalse.setVisibility(View.VISIBLE);
                 animationViewFalse.playAnimation();
-                animationViewFalse.loop(false);
                 animationViewFalse.addAnimatorListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {

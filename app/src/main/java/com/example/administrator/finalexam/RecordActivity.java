@@ -3,9 +3,11 @@ package com.example.administrator.finalexam;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -35,7 +37,9 @@ import static com.example.administrator.finalexam.utils.Utils.getOutputMediaFile
 
 
 public class RecordActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+
     private TakePhotoButton button;
+    private static  int REQUEST_CODE = 1086;
     private SurfaceView mSurfaceView;
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
@@ -112,6 +116,13 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
             }
         });
 
+        findViewById(R.id.btn_select).setOnClickListener(v -> {
+
+            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, REQUEST_CODE);
+
+
+        });
 
 
         findViewById(R.id.btn_exit).setOnClickListener(v -> {
@@ -145,7 +156,33 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
 
     }
 
-    public Camera getCamera(int position) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
+            Uri selectedVideo = data.getData();
+            String[] filePathColumn = {MediaStore.Video.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedVideo,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String videoPath = cursor.getString(columnIndex);
+            cursor.close();
+
+            filePath = videoPath;
+
+            Intent intent = new Intent(RecordActivity.this, PriviewAndPost.class);
+            intent.putExtra("path",filePath);
+            startActivity(intent);
+            overridePendingTransition(R.anim.in_from_left, R.anim.out_right);
+            finish();
+        }
+
+    }
+        public Camera getCamera(int position) {
         CAMERA_TYPE = position;
         if (mCamera != null) {
             releaseCameraAndPreview();
