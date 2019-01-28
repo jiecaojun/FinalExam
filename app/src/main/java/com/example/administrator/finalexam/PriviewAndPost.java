@@ -34,6 +34,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class PriviewAndPost extends AppCompatActivity {
 
     private LottieAnimationView animationViewSuccess;
+    private LottieAnimationView animationViewFalse;
+    private LottieAnimationView animationViewLoading;
     private Button btnExit;
     private Button Post;
     private String path;
@@ -47,7 +49,10 @@ public class PriviewAndPost extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priview_and_post);
         path=getIntent().getStringExtra("path");
-        animationViewSuccess = findViewById(R.id.animation_view);
+        animationViewSuccess = findViewById(R.id.animation_success);
+        animationViewFalse = findViewById(R.id.animation_false);
+        animationViewLoading = findViewById(R.id.animation_loading);
+        animationViewLoading.setVisibility(View.GONE);
 
         videoUri = Uri.parse("file://"+path);
         videoView = findViewById(R.id.video_pre);
@@ -83,9 +88,15 @@ public class PriviewAndPost extends AppCompatActivity {
         Bitmap bitmap = getVideoThumb(path);
         imagePath = saveBitmapToSDCard(bitmap,path);
         imgUri = Uri.parse("file://" + imagePath);
+        animationViewLoading.setVisibility(View.VISIBLE);
+        animationViewLoading.playAnimation();
+
+
 
         getResponseWithRetrofitAsyncWithVideo(new Callback<PostVideoResponse>() {
             @Override public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response){
+              animationViewLoading.cancelAnimation();
+              animationViewLoading.setVisibility(View.GONE);
                 animationViewSuccess.playAnimation();
                 animationViewSuccess.addAnimatorListener(new Animator.AnimatorListener() {
                     @Override
@@ -96,7 +107,8 @@ public class PriviewAndPost extends AppCompatActivity {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         Intent intent = new Intent(PriviewAndPost.this,MainActivity.class);
-                        startActivity(intent);
+                        PriviewAndPost.this.finish();
+//                        startActivity(intent);
                         Toast.makeText(getApplicationContext(),"上传成功！！",Toast.LENGTH_SHORT).show();
 
                     }
@@ -114,7 +126,33 @@ public class PriviewAndPost extends AppCompatActivity {
 
             }
             @Override public void onFailure(Call<PostVideoResponse> call, Throwable t) {
+                animationViewLoading.cancelAnimation();
+                animationViewLoading.setVisibility(View.GONE);
+                animationViewFalse.setVisibility(View.VISIBLE);
+                animationViewFalse.playAnimation();
+                animationViewFalse.loop(false);
+                animationViewFalse.addAnimatorListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
 
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                    animationViewFalse.cancelAnimation();
+                    animationViewFalse.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
                 t.printStackTrace();
             }
         });
@@ -157,8 +195,6 @@ public class PriviewAndPost extends AppCompatActivity {
                 fos.close();
                 return newpath;
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
