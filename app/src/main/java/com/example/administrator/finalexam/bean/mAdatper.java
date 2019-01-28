@@ -40,10 +40,13 @@ public class mAdatper extends RecyclerView.Adapter{
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         MyViewHolder viewHolder = new MyViewHolder(view);
 
-        Glide.with(viewHolder.viewImage.getContext()).load(mFeeds.get(viewHolderCount).getImage_url()).into(viewHolder.viewImage);
-        viewHolder.viewName.setText(mFeeds.get(viewHolderCount).getUser_name());
-        viewHolder.viewID.setText(mFeeds.get(viewHolderCount).getStudeng_id());
-                viewHolderCount++;
+
+
+//        Glide.with(viewHolder.viewImage.getContext()).load(mFeeds.get(viewHolderCount).getImage_url()).into(viewHolder.viewImage);
+//        viewHolder.viewName.setText(mFeeds.get(viewHolderCount).getUser_name());
+//        viewHolder.viewID.setText(mFeeds.get(viewHolderCount).getStudeng_id());
+          viewHolderCount++;
+
         return viewHolder;
     }
 
@@ -70,6 +73,7 @@ public class mAdatper extends RecyclerView.Adapter{
     public void refresh(List<Feed> addList) { //增加数据
         int position = mFeeds.size();
         mFeeds.addAll(position, addList);
+//        notifyItemRangeInserted(0,20);
         notifyDataSetChanged();
     }
 
@@ -80,7 +84,6 @@ public class mAdatper extends RecyclerView.Adapter{
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }
-
 
 
 }

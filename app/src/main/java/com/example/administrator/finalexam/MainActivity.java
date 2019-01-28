@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -107,11 +108,21 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        LinearSnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(mRv);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         //设置布局管理器
+
+
+        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                layoutManager.invalidateSpanAssignments();
+            }
+        });
+
+
         mRv.setLayoutManager(layoutManager);
+        mRv.setHasFixedSize(true);
         //设置为垂直布局，这也是默认的
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
         //设置Adapter
@@ -151,20 +162,26 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        srfresh.setEnableAutoLoadmore(false);
+        srfresh.setEnableAutoLoadmore(true);
         srfresh.autoRefresh();
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchFeed();
+        recycleAdapter.refresh(mFeeds);
+        srfresh.finishRefresh();
+    }
 
     public void fetchFeed(){
 
         getResponseWithRetrofitAsyncWithImg(new Callback<FeedResponse>() {
             @Override public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response){
                 mFeeds = response.body().getFeed();
-                Toast.makeText(getApplicationContext(),"获取成功！！",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"获取成功",Toast.LENGTH_SHORT).show();
             }
             @Override public void onFailure(Call<FeedResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),"获取失败！！",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"获取失败",Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
         });
