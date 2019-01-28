@@ -1,6 +1,7 @@
 package com.example.administrator.finalexam;
 
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,11 +19,13 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.airbnb.lottie.LottieAnimationView;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -43,7 +46,8 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private TextView author_name;
     private SurfaceView mSurfaceView;
     private ProgressBar mProcessBar;
-    private TextView process_notice;
+    private ImageView process_notice;
+    private LottieAnimationView lottieAnimationView;
 
     /**
      * 闲置
@@ -94,7 +98,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
             mSeekbar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
         }
         mProcessBar=(ProgressBar)findViewById(R.id.progressBar);
-        process_notice=(TextView)findViewById(R.id.progress_notice);
+        process_notice=(ImageView) findViewById(R.id.progress_notice);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
         //SurfaceView帮助类对象
@@ -105,11 +109,45 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
 
 
         mSurfaceView.setOnClickListener(new View.OnClickListener() {
+            long[] mHints=new long[2];
             @Override
             public void onClick(View v) {
-                if(currentState==PLAYING){
-                    return;
+                if(currentState==PLAYING) {
+                    System.arraycopy(mHints, 1, mHints, 0, mHints.length - 1);
+                    mHints[mHints.length - 1] = SystemClock.uptimeMillis();
+
+                    if (SystemClock.uptimeMillis()-mHints[0]<=500){
+                        currentState = PLAYING;
+                        //TODO播放动画
+                        lottieAnimationView = findViewById(R.id.doubleclick);
+                        lottieAnimationView.setVisibility(View.VISIBLE);
+                        lottieAnimationView.setAnimation("thumbs_up.json");
+                        lottieAnimationView.setRepeatCount(0);
+                        lottieAnimationView.playAnimation();
+                        lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                lottieAnimationView.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
+                    }
                 }
+
                 if(currentState==NORMAL){
                     mProcessBar.setVisibility(View.VISIBLE);
                 }
@@ -289,7 +327,6 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     public void onCompletion(MediaPlayer mp) {
         if(mMediapPlayer!=null) {
             currentState=STOPING;
-            process_notice.setText("重播");
             process_notice.setVisibility(View.VISIBLE);
         }
     }
@@ -297,15 +334,16 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMediapPlayer.stop();
-        mMediapPlayer.reset();
-        try {
-            mMediapPlayer.release();
-        } catch (Exception e) {
-            Log.e("MediaPlayer", e.toString());
+        if(mMediapPlayer!=null){
+            mMediapPlayer.stop();
+            mMediapPlayer.reset();
+            try {
+                mMediapPlayer.release();
+            } catch (Exception e) {
+                Log.e("MediaPlayer", e.toString());
+            }
+            mMediapPlayer = null;
         }
-        mMediapPlayer = null;
-
     }
     /**
      * 刷新进度和时间的任务
