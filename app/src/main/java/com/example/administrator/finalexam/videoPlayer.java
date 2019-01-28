@@ -127,12 +127,13 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
                         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(Animator animation) {
-
+                                mSurfaceView.setClickable(false);
                             }
 
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 lottieAnimationView.setVisibility(View.INVISIBLE);
+                                mSurfaceView.setClickable(true);
                             }
 
                             @Override
@@ -154,8 +155,8 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
                 if(currentState==STOPING){
                     mProcessBar.setVisibility(View.INVISIBLE);
                 }
-                process_notice.setVisibility(View.INVISIBLE);
 
+                process_notice.setVisibility(View.INVISIBLE);
                 if (mMediapPlayer != null) {
                     if (currentState != PAUSING) {
                         mMediapPlayer.start();
@@ -172,25 +173,6 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
                 play();
             }
         });
-
-
-//        mProcessBar.setVisibility(View.VISIBLE);
-//        process_notice.setVisibility(View.INVISIBLE);
-//
-//        if (mMediapPlayer != null) {
-//            if (currentState != PAUSING) {
-//                mMediapPlayer.start();
-//                currentState = PLAYING;
-//                //每次在调用刷新线程时，都要设为false
-//                isStopUpdatingProgress = false;
-//                return;
-//                //下面这个判断完美的解决了停止后重新播放的，释放两个资源的问题
-//            } else if (currentState == STOPING) {
-//                mMediapPlayer.reset();
-//                mMediapPlayer.release();
-//            }
-//        }
-//        play();
     }
 
     /**
@@ -264,6 +246,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
             tvTotalTime.setText("/" + m + ":" + s);
             tvCurrentTime.setText("00:00");
 
+            mProcessBar.setVisibility(View.INVISIBLE);
             isStopUpdatingProgress = false;
             new Thread(new UpdateProgressRunnable()).start();
         } catch (Exception e) {
