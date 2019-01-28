@@ -23,6 +23,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.airbnb.lottie.LottieAnimationView;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -44,6 +45,7 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     private SurfaceView mSurfaceView;
     private ProgressBar mProcessBar;
     private TextView process_notice;
+    private LottieAnimationView lottieAnimationView;
 
     /**
      * 闲置
@@ -105,11 +107,31 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
 
 
         mSurfaceView.setOnClickListener(new View.OnClickListener() {
+            long[] mHints=new long[2];
             @Override
             public void onClick(View v) {
-                if(currentState==PLAYING){
-                    return;
+                if(currentState==PLAYING) {
+                    System.arraycopy(mHints, 1, mHints, 0, mHints.length - 1);
+                    mHints[mHints.length - 1] = SystemClock.uptimeMillis();
+
+                    if (SystemClock.uptimeMillis()-mHints[0]<=500){
+                        currentState = PLAYING;
+                        //TODO播放动画
+                        lottieAnimationView = findViewById(R.id.doubleclick);
+                        lottieAnimationView.setAnimation("thumbs_up.json");
+                        lottieAnimationView.setRepeatCount(0);
+                        lottieAnimationView.playAnimation();
+                    }
                 }
+////                    if(currentState==PAUSING){
+////                        mMediapPlayer.pause();
+////                        //停止刷新主线程
+////                        isStopUpdatingProgress = true;
+////                    }
+//                }
+//                else if (currentState==PAUSING){
+//                    play();
+//                }
                 if(currentState==NORMAL){
                     mProcessBar.setVisibility(View.VISIBLE);
                 }
@@ -297,15 +319,16 @@ public class videoPlayer extends AppCompatActivity implements OnSeekBarChangeLis
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMediapPlayer.stop();
-        mMediapPlayer.reset();
-        try {
-            mMediapPlayer.release();
-        } catch (Exception e) {
-            Log.e("MediaPlayer", e.toString());
+        if(mMediapPlayer!=null){
+            mMediapPlayer.stop();
+            mMediapPlayer.reset();
+            try {
+                mMediapPlayer.release();
+            } catch (Exception e) {
+                Log.e("MediaPlayer", e.toString());
+            }
+            mMediapPlayer = null;
         }
-        mMediapPlayer = null;
-
     }
     /**
      * 刷新进度和时间的任务
