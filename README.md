@@ -14,7 +14,7 @@ APP完成了基本要求：包括
 特殊功能：  
 1、能够显示刷新出来的视频作者信息（姓名、学号）；2、双击视频点赞；3、在录制十秒后会自动停止；
 4、视频录制结束后自动生成封面，并预览，点击"send a story"上传；5、大量使用动画，活动间的跳转，双击点赞，视频上传结果反馈等都使用了lottie动画；  
-![Watch the video](https://github.com/jiecaojun/FinalExam/blob/master/doc/%E6%8F%90%E4%BA%A4%E6%88%90%E5%8A%9F.gif)
+![Image text](https://github.com/jiecaojun/FinalExam/blob/master/doc/%E6%8F%90%E4%BA%A4%E6%88%90%E5%8A%9F.gif)
 6、视频列表使用瀑布流布局；  
   
 创新点：1、拥有平滑的切换效果，在视频列表点击后能够平滑的切换到播放界面；2、下拉刷新，滑动到列表最下端后上拉刷新；  
