@@ -3,7 +3,7 @@
 小组分工：
 王昊：视频信息流、视频录制、视频上传； 吴杰：视频播放  
 文件目录如下：  
-![Image text](https://github.com/jiecaojun/FinalExam/blob/master/%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95.png)
+![Image text](https://github.com/jiecaojun/FinalExam/blob/master/%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95.png)  
 APP完成了基本要求：包括  
 1、访问API: http://10.108.10.39:8080/minidouyin/feed; 2、使用RecyclerView显示视频列表；3、使用Glide加载封面图；  
 4、从视频信息流点击某个视频封面进入播放页面；5、根据视频信息的url播放视频；6、点击屏幕开始播放，结束后点击再次播放；    
